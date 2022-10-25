@@ -1,30 +1,30 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
+  del, get,
+  getModelSchemaRef, param, patch, post, put, requestBody,
+  response
 } from '@loopback/rest';
 import {Empleado} from '../models';
 import {EmpleadoRepository} from '../repositories';
+import {AutenticacionService, NotificacionesService} from '../services';
 
 export class EmpleadoController {
   constructor(
     @repository(EmpleadoRepository)
-    public empleadoRepository : EmpleadoRepository,
-  ) {}
+    public empleadoRepository: EmpleadoRepository,
+    @service(AutenticacionService)
+    public servicioAutenticacion: AutenticacionService,
+    @service(NotificacionesService)
+    public notifaciones: NotificacionesService,
+  ) { }
 
   @post('/empleados')
   @response(200, {
@@ -44,7 +44,13 @@ export class EmpleadoController {
     })
     empleado: Omit<Empleado, 'id'>,
   ): Promise<Empleado> {
+    const clave = this.servicioAutenticacion.generarClave();
+    console.log('La clave a cifrar es:' + clave);
+    const claveCifrada = this.servicioAutenticacion.cifrarClave(clave);
+    console.log('La clave cifada es:' + claveCifrada);
+    empleado.clave = claveCifrada;
     return this.empleadoRepository.create(empleado);
+
   }
 
   @get('/empleados/count')
