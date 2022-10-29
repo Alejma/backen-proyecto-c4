@@ -20,4 +20,18 @@ export class AutenticacionService {
     let claveCifrada = CryptoJS.MD5(clave).toString();
     return claveCifrada;
   }
+
+  IdentificarEmpleado(usuario: string, clave: string) {
+    try {
+      let p = this.empleadoRepository.findOne({where: {correo: usuario, clave: clave}});
+      if (p) {
+        return p;
+      }
+      return false;
+    } catch {
+
+    }
+
+  }
+
 }
