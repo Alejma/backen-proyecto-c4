@@ -1,5 +1,6 @@
 import { /* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
+import {Empleado} from '../models';
 import {EmpleadoRepository} from '../repositories';
 const generatePassword = require("password-generator");
 const CryptoJS = require("crypto-js");
@@ -29,8 +30,12 @@ export class AutenticacionService {
       }
       return false;
     } catch {
-
+      return false;
     }
+
+  }
+
+  GenerarTokenJWT(empleado: Empleado) {
 
   }
 
