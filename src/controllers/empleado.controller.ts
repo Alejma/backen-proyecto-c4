@@ -44,12 +44,15 @@ export class EmpleadoController {
     })
     empleado: Omit<Empleado, 'id'>,
   ): Promise<Empleado> {
-    const clave = this.servicioAutenticacion.generarClave();
+    let clave = this.servicioAutenticacion.generarClave();
     console.log('La clave a cifrar es:' + clave);
-    const claveCifrada = this.servicioAutenticacion.cifrarClave(clave);
+    let claveCifrada = this.servicioAutenticacion.cifrarClave(clave);
     console.log('La clave cifada es:' + claveCifrada);
     empleado.clave = claveCifrada;
-    return this.empleadoRepository.create(empleado);
+    let p = await this.empleadoRepository.create(empleado);
+    this.notifaciones.enviarSms(empleado.telefono, empleado.nombres, clave);
+    return p;
+    //return this.empleadoRepository.create(empleado);
 
   }
 
@@ -154,3 +157,4 @@ export class EmpleadoController {
     await this.empleadoRepository.deleteById(id);
   }
 }
+

@@ -1,4 +1,4 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
 import {Empresa} from './empresa.model';
 
 @model()
@@ -15,6 +15,17 @@ export class Directivo extends Entity {
     required: true,
   })
   nombre_completo: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  edad: string;
+  @property({
+    type: 'string',
+    required: true,
+  })
+  sueldo: string;
 
   @property({
     type: 'string',
