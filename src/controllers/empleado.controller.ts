@@ -9,10 +9,10 @@ import {
 } from '@loopback/repository';
 import {
   del, get,
-  getModelSchemaRef, param, patch, post, put, requestBody,
+  getModelSchemaRef, HttpErrors, param, patch, post, put, requestBody,
   response
 } from '@loopback/rest';
-import {Empleado} from '../models';
+import {Credenciales, Empleado} from '../models';
 import {EmpleadoRepository} from '../repositories';
 import {AutenticacionService, NotificacionesService} from '../services';
 
@@ -25,6 +25,34 @@ export class EmpleadoController {
     @service(NotificacionesService)
     public notifaciones: NotificacionesService,
   ) { }
+
+
+
+  @post("/identificarEmpleado", {
+    responses: {
+      '200': {
+        description: "Identificacion de Empleado"
+      }
+    }
+  })
+  async identificarEmpleado(
+    @requestBody() credenciales: Credenciales
+  ) {
+    let p = await this.servicioAutenticacion.IdentificarEmpleado(credenciales.usuario, credenciales.clave);
+    if (p) {
+      let token = this.servicioAutenticacion.GenerarTokenJWT(p);
+      return {
+        datos: {
+          nombre: p.nombres,
+          correo: p.correo,
+          id: p.id
+        },
+        tk: token
+      }
+    } else {
+      throw new HttpErrors[401]("Datos no validos");
+    }
+  }
 
   @post('/empleados')
   @response(200, {
@@ -50,6 +78,7 @@ export class EmpleadoController {
     console.log('La clave cifada es:' + claveCifrada);
     empleado.clave = claveCifrada;
     let p = await this.empleadoRepository.create(empleado);
+    //this.notifaciones.enviarSms(empleado.telefono, empleado.nombres, clave);
     this.notifaciones.enviarSms(empleado.telefono, empleado.nombres, clave);
     return p;
     //return this.empleadoRepository.create(empleado);
