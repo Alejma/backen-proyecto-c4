@@ -9,3 +9,8 @@ export * from './empresa.controller';
 export * from './cliente.controller';
 export * from './empleado.controller';
 export * from './directivo.controller';
+export * from './producto.controller';
+export * from './empresa-producto.controller';
+export * from './producto-empresa.controller';
+export * from './cliente-producto.controller';
+export * from './producto-cliente.controller';
