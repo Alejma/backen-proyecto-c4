@@ -8,8 +8,8 @@ export class NotificacionesService {
   public empleadoRepository: EmpleadoRepository) { }
 
   enviarSms(numero: string, nombre: string, clave: string) {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const accountSid = 'AC0cd5202526504f4727741e1c3e2e683b';
+    const authToken = '01f8235fe4964a7863833bc6a109ba92'
     const client = require('twilio')(accountSid, authToken);
 
     client.messages
